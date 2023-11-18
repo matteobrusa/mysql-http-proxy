@@ -16,14 +16,16 @@ console.log("[INFO] Connected!");
 console.log("[INFO] Starting server...");
 polka()
   .use(json())
-  .post("/query", async (req, res) => {
+  .get("/query", async (req, res) => {
     // Get the JSON encoded body.
-    const { query } = req.body;
+    //const  query } = req.body;
+    const { query } = req.query
 
     // If the query is undefined, return an error.
     if (query === undefined) {
-      res.writeHead(400, { "Content-Type": "application/json" });
+      res.writeHead(400, { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" });
       res.end(JSON.stringify({ error: "No query provided." }));
+      console.log(req)
       return;
     }
 
@@ -37,7 +39,7 @@ polka()
     }
 
     // Return the response.
-    res.writeHead(200, { "Content-Type": "application/json" });
+    res.writeHead(200, { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" });
     res.end(JSON.stringify(response));
   })
   .listen(3001, () => {
