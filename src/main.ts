@@ -28,11 +28,54 @@ polka()
       console.log(req)
       return;
     }
+    const { format } = req.query
+    //console.log(req.query)
+
+    
+    //const format = query["format"]
+    
+    /*
+    if (format) {
+      console.log("using format: " + format)
+    }
+    */
+
 
     let response: any = [];
     try {
       // Run the query on the DB.
       response = await queryDb(query);
+     
+      // convert to simple arrays
+      if (format == 'plotly') {
+        //console.log("using plotly format")
+        //console.log(response)
+
+        const keys: any[]= Object.keys(response[0]) // tstamp, Wh
+
+        // init the data dict
+        let data= {}
+        keys.forEach( (key) =>{
+          data[key]=[]
+        })
+        // console.log(data)
+
+        response.forEach( (element) => {
+          // console.log(element)
+
+          keys.forEach( (key) =>{
+            //console.log(key)
+            //console.log(data[key])
+            data[key].push(element[key])
+          })         
+        });
+
+        // console.log(data)
+        response= data
+      }
+      
+
+
     } catch (e: any) {
       console.log(e);
       response = { error: e.message };
